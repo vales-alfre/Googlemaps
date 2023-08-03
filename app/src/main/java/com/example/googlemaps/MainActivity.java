@@ -18,9 +18,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.ArrayList;
+import org.json.JSONException;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import WebService.Asynchtask;
+import WebService.WebService;
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, Asynchtask {
 GoogleMap Mapi;
     ArrayList<LatLng> marcar = new ArrayList(6);
     @Override
@@ -59,7 +65,7 @@ GoogleMap Mapi;
     }
 
     @Override
-    public void onMapClick(@NonNull LatLng latLng) {
+    public void onMapClick(@NonNull LatLng latLng)  {
         LatLng punto = new LatLng(latLng.latitude,
                 latLng.longitude);
         MarkerOptions macar= new MarkerOptions();
@@ -79,8 +85,22 @@ GoogleMap Mapi;
         lineas.color(Color.RED);
         Mapi.addPolyline(lineas);
 
+        Map<String, String> datos = new HashMap<String, String>();
+        datos.put("key","AIzaSyBdnZ0lGkW_vH2M6Au1SUqUkntR-mUvrNI");
+        datos.put("destinations","");
+        datos.put("origins","");
+        datos.put("units","");
+        WebService ws= new WebService("https://maps.googleapis.com/maps/api/distancematrix/json",
+                datos, this,  MainActivity.this);
+        ws.execute("POST");
 
 
+
+
+    }
+
+    @Override
+    public void processFinish(String result) throws JSONException {
 
     }
 }
